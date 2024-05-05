@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "py-googletrans"
+name = "pygoogletrans"
 version = "0.1.0"
 description = "Unofficial Google Translate Python API (fork of googletrans)"
 license = "MIT"

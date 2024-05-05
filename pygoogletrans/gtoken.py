@@ -7,7 +7,7 @@ from typing import List
 
 import httpx
 
-from googletrans.utils import rshift
+from pygoogletrans.utils import rshift
 
 
 class TokenAcquirer:

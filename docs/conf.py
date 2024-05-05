@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Googletrans documentation build configuration file, created by
@@ -15,7 +14,7 @@
 
 import datetime
 import sys
-import googletrans
+import pygoogletrans
 
 sys.path.append("..")
 
@@ -62,7 +61,7 @@ author = "SuHun Han (ssut)"
 # built documents.
 #
 # The short X.Y version.
-version = googletrans.__version__
+version = pygoogletrans.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
 

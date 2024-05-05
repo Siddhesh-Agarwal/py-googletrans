@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import argparse
-from googletrans import Translator
+from pygoogletrans import Translator
 
 
 def main():

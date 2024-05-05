@@ -12,8 +12,7 @@ import httpcore
 import httpx
 from httpx import Timeout
 
-from googletrans import urls, utils
-from googletrans.constants import (
+from pygoogletrans.constants import (
     DEFAULT_RAISE_EXCEPTION,
     DEFAULT_USER_AGENT,
     DUMMY_DATA,
@@ -21,8 +20,10 @@ from googletrans.constants import (
     LANGUAGES,
     SPECIAL_CASES,
 )
-from googletrans.gtoken import TokenAcquirer
-from googletrans.models import Detected, Translated
+from pygoogletrans.gtoken import TokenAcquirer
+from pygoogletrans.models import Detected, Translated
+from pygoogletrans.urls import TRANSLATE
+from pygoogletrans.utils import build_params, format_json
 
 EXCLUDES = ("en", "ca", "fr")
 
@@ -95,15 +96,15 @@ class Translator:
         override: Union[Dict[str, Any], None] = None,
     ):
         token = self.token_acquirer.do(text)
-        params = utils.build_params(
+        params = build_params(
             query=text, src=src, dest=dest, token=token, override=override
         )
 
-        url = urls.TRANSLATE.format(host=self._pick_service_url())
+        url = TRANSLATE.format(host=self._pick_service_url())
         r = self.client.get(url, params=params)
 
         if r.status_code == 200:
-            data = utils.format_json(r.text)
+            data = format_json(r.text)
             return data, r
 
         if self.raise_exception:
