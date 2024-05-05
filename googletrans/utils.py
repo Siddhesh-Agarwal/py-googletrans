@@ -1,8 +1,9 @@
 """A conversion module for googletrans"""
 
-import json
 import re
 from typing import Any, Dict, List, Tuple, Union
+
+import ujson
 
 
 def build_params(
@@ -12,6 +13,27 @@ def build_params(
     token: str,
     override: Union[Dict[str, Any], None] = None,
 ):
+    """
+    build_params is a helper function for Translator._translate
+
+    Parameters
+    ----------
+    query : str
+        the text to be translated
+    src : str
+        the source language
+    dest : str
+        the destination language
+    token : str
+        google translate token
+    override : Union[Dict[str, Any], None], optional
+        additional parameters, by default None
+
+    Returns
+    -------
+    dict
+        the build parameters
+    """
     params = {
         "client": "webapp",
         "sl": src,
@@ -35,6 +57,20 @@ def build_params(
 
 
 def legacy_format_json(original: str):
+    """
+    legacy_format_json is a simple wrapper function to convert json strings to python objects
+
+    Parameters
+    ----------
+    original : str
+        a JSON string
+
+    Returns
+    -------
+    any
+        a python object
+    """
+
     # save state
     states: List[Tuple[int, str]] = []
     text = original
@@ -63,18 +99,45 @@ def legacy_format_json(original: str):
             # use slicing to extract those parts of the original string to be kept
             text = text[:p] + states[j][1] + text[nxt:]
 
-    converted = json.loads(text)
+    converted = ujson.loads(text)
     return converted
 
 
 def get_items(dict_object: Dict[Any, Any]):
+    """
+    get_items A generator function to iterate over all items in a dictionary
+
+    Parameters
+    ----------
+    dict_object : Dict[Any, Any]
+        a dictionary
+
+    Yields
+    ------
+    Tuple[Any, Any]
+        a tuple of key and value in every iteration
+    """
     for key in dict_object:
         yield key, dict_object[key]
 
 
 def format_json(original: str):
+    """
+    format_json is a simple wrapper function to convert json strings to python objects
+
+    Parameters
+    ----------
+    original : str
+        a JSON string
+
+    Returns
+    -------
+    any
+        a python object
+    """
+
     try:
-        converted = json.loads(original)
+        converted = ujson.loads(original)
     except ValueError:
         converted = legacy_format_json(original)
 

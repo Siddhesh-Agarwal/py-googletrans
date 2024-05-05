@@ -14,7 +14,7 @@ Compatible with Python 3.9 and above
 - [x] Customizable service URL
 - [x] HTTP/2 support
 - [x] Poetry support
-- [ ] Fast JSON parsing
+- [x] Fast JSON parsing
 - [ ] Proxy support
 - [ ] Internal session management (for better bulk translations)
 
