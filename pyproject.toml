@@ -46,6 +46,11 @@ pytest-watch = "^4.2.0"
 pytest-testmon = "^2.1.1"
 sphinx = "^7.3.7"
 
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+isort = "^5.13.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
