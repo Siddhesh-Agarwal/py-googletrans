@@ -1,4 +1,5 @@
 from typing import Union
+
 from httpx import Response
 
 
@@ -40,7 +41,7 @@ class Translated(Base):
 
     def __unicode__(self):  # pragma: nocover
         return (
-            f'Translated(src={self.src}, dest={self.dest}, text={self.text}, pronunciation={self.pronunciation},'
+            f"Translated(src={self.src}, dest={self.dest}, text={self.text}, pronunciation={self.pronunciation},"
             f'extra_data={repr(self.extra_data)[:10] + "..."})'
         )
 

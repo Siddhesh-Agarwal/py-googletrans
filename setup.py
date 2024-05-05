@@ -9,63 +9,68 @@ from setuptools import setup, find_packages
 def get_file(*paths):
     path = os.path.join(*paths)
     try:
-        with open(path, 'rb') as f:
-            return f.read().decode('utf8')
+        with open(path, "rb") as f:
+            return f.read().decode("utf8")
     except IOError:
         pass
 
 
 def get_version():
-    init_py = get_file(os.path.dirname(__file__), 'googletrans', '__init__.py')
-    pattern = r"{0}\W*=\W*'([^']+)'".format('__version__')
-    version, = re.findall(pattern, init_py)
+    init_py = get_file(os.path.dirname(__file__), "googletrans", "__init__.py")
+    pattern = r"{0}\W*=\W*'([^']+)'".format("__version__")
+    (version,) = re.findall(pattern, init_py)
     return version
 
 
 def get_description():
-    init_py = get_file(os.path.dirname(__file__), 'googletrans', '__init__.py')
+    init_py = get_file(os.path.dirname(__file__), "googletrans", "__init__.py")
     pattern = r'"""(.*?)"""'
-    description, = re.findall(pattern, init_py, re.DOTALL)
+    (description,) = re.findall(pattern, init_py, re.DOTALL)
     return description
 
 
 def get_readme():
-    return get_file(os.path.dirname(__file__), 'README.rst')
+    return get_file(os.path.dirname(__file__), "README.rst")
 
 
 def install():
     setup(
-        name='googletrans',
+        name="googletrans",
         version=get_version(),
         description=get_description(),
         long_description=get_readme(),
-        license='MIT',
-        author='SuHun Han',
-        author_email='ssut' '@' 'ssut.me',
-        url='https://github.com/ssut/py-googletrans',
-        classifiers=['Development Status :: 5 - Production/Stable',
-                     'Intended Audience :: Education',
-                     'Intended Audience :: End Users/Desktop',
-                     'License :: Freeware',
-                     'Operating System :: POSIX',
-                     'Operating System :: Microsoft :: Windows',
-                     'Operating System :: MacOS :: MacOS X',
-                     'Topic :: Education',
-                     'Programming Language :: Python',
-                     'Programming Language :: Python :: 3.6',
-                     'Programming Language :: Python :: 3.7',
-                     'Programming Language :: Python :: 3.8'],
-        packages=find_packages(exclude=['docs', 'tests']),
-        keywords='google translate translator',
+        license="MIT",
+        author="SuHun Han",
+        author_email="ssut" "@" "ssut.me",
+        url="https://github.com/ssut/py-googletrans",
+        classifiers=[
+            "Development Status :: 5 - Production/Stable",
+            "Intended Audience :: Education",
+            "Intended Audience :: End Users/Desktop",
+            "License :: Freeware",
+            "Operating System :: POSIX",
+            "Operating System :: Microsoft :: Windows",
+            "Operating System :: MacOS :: MacOS X",
+            "Topic :: Education",
+            "Programming Language :: Python",
+            "Programming Language :: Python :: 3.6",
+            "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
+            "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: 3.11",
+        ],
+        packages=find_packages(exclude=["docs", "tests"]),
+        keywords="google translate translator",
         install_requires=[
-            'httpx==0.13.3',
+            "httpx==0.13.3",
         ],
-        python_requires= '>=3.6',
+        python_requires=">=3.6",
         tests_require=[
-            'pytest',
-            'coveralls',
+            "pytest",
+            "coveralls",
         ],
-        scripts=['translate']
+        scripts=["translate"],
     )
 
 

@@ -13,16 +13,16 @@ import httpx
 from httpx import Timeout
 
 from googletrans import urls, utils
-from googletrans.gtoken import TokenAcquirer
 from googletrans.constants import (
+    DEFAULT_RAISE_EXCEPTION,
     DEFAULT_USER_AGENT,
+    DUMMY_DATA,
     LANGCODES,
     LANGUAGES,
     SPECIAL_CASES,
-    DEFAULT_RAISE_EXCEPTION,
-    DUMMY_DATA,
 )
-from googletrans.models import Translated, Detected
+from googletrans.gtoken import TokenAcquirer
+from googletrans.models import Detected, Translated
 
 EXCLUDES = ("en", "ca", "fr")
 
