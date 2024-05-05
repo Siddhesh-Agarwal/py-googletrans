@@ -6,7 +6,7 @@ You can translate text using this module.
 """
 
 import random
-from typing import Dict, Iterator, List, Union
+from typing import Any, Dict, Iterator, List, Union
 
 import httpcore
 import httpx
@@ -28,8 +28,7 @@ EXCLUDES = ("en", "ca", "fr")
 
 
 class Translator:
-    """Google Translate ajax API implementation class
-
+    """Google Translate ajax API implementation class.
     You have to create an instance of Translator to use this API
 
     :param service_urls: google translate url list. URLs will be used randomly.
@@ -44,12 +43,13 @@ class Translator:
                     For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
     :type proxies: dictionary
 
-    :param timeout: Definition of timeout for httpx library.
-                    Will be used for every request.
+    :param timeout: Definition of timeout for httpx library. Will be used for every request.
     :type timeout: number or a double of numbers
+
     :param proxies: proxies configuration.
                     Dictionary mapping protocol or protocol and host to the URL of the proxy
                     For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
+
     :param raise_exception: if `True` then raise exception if smth will go wrong
     :type raise_exception: boolean
     """
@@ -87,7 +87,13 @@ class Translator:
             return self.service_urls[0]
         return random.choice(self.service_urls)
 
-    def _translate(self, text: str, dest: str, src: str, override):
+    def _translate(
+        self,
+        text: str,
+        dest: str,
+        src: str,
+        override: Union[Dict[str, Any], None] = None,
+    ):
         token = self.token_acquirer.do(text)
         params = utils.build_params(
             query=text, src=src, dest=dest, token=token, override=override
@@ -101,8 +107,8 @@ class Translator:
             return data, r
 
         if self.raise_exception:
-            raise Exception(
-                f'Unexpected status code "{r.status_code}" from {self.service_urls}'
+            raise ValueError(
+                f"Unexpected status code {r.status_code} from {self.service_urls}"
             )
 
         DUMMY_DATA[0][0][0] = text
@@ -212,7 +218,7 @@ class Translator:
         except:  # pragma: nocover
             pass
 
-        pron = origin
+        pron: str = origin
         try:
             pron = data[0][1][-2]
         except:  # pragma: nocover
@@ -291,7 +297,7 @@ class Translator:
             else:
                 src = "".join(data[8][0])
                 confidence = data[8][-2][0]
-        except Exception:  # pragma: nocover
+        except:  # pragma: nocover
             pass
         result = [Detected(lang=src, confidence=confidence, response=response)]
 
