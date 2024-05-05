@@ -82,7 +82,7 @@ class TokenAcquirer:
                         # the value can sometimes be negative
                         elif isinstance(node.value, ast.UnaryOp) and isinstance(
                             node.value.op, ast.USub
-                        ):  # pragma: nocover
+                        ):
                             keys[name] = -node.value.operand.n
                 elif isinstance(node, ast.Return):
                     # parameters should be set after this point
@@ -92,15 +92,15 @@ class TokenAcquirer:
                 elif visit_return and not isinstance(n, complex) and n > 0:
                     # the default operator is '+' but implement some more for
                     # all possible scenarios
-                    if isinstance(node, ast.Add):  # pragma: nocover
+                    if isinstance(node, ast.Add):
                         pass
-                    elif isinstance(node, ast.Sub):  # pragma: nocover
+                    elif isinstance(node, ast.Sub):
                         operator = "-"
-                    elif isinstance(node, ast.Mult):  # pragma: nocover
+                    elif isinstance(node, ast.Mult):
                         operator = "*"
-                    elif isinstance(node, ast.Pow):  # pragma: nocover
+                    elif isinstance(node, ast.Pow):
                         operator = "**"
-                    elif isinstance(node, ast.BitXor):  # pragma: nocover
+                    elif isinstance(node, ast.BitXor):
                         operator = "^"
             # a safety way to avoid Exceptions
             clause = compile(f"{keys['a']}{operator}{keys['b']}")
@@ -194,7 +194,7 @@ class TokenAcquirer:
             a_ = self._xr(a_, "+-a^+6")
         a_ = self._xr(a_, "+-3^+b+-f")
         a_ ^= int(d[1]) if len(d) > 1 else 0
-        if a_ < 0:  # pragma: nocover
+        if a_ < 0:
             a_ = (a_ & 2147483647) + 2147483648
         a_ %= 1000000  # int(1E6)
 

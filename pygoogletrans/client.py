@@ -65,7 +65,7 @@ class Translator:
         http2: bool = True,
     ):
         self.client = httpx.Client(http2=http2)
-        if proxies is not None:  # pragma: nocover
+        if proxies:
             self.client.proxies = proxies
 
         self.client.headers.update(
@@ -74,7 +74,7 @@ class Translator:
             }
         )
 
-        if timeout is not None:
+        if timeout:
             self.client.timeout = timeout
 
         self.service_urls = service_urls or ["translate.google.com"]
@@ -216,19 +216,19 @@ class Translator:
         # src passed is equal to auto.
         try:
             src = data[2]
-        except:  # pragma: nocover
+        except:
             pass
 
         pron: str = origin
         try:
             pron = data[0][1][-2]
-        except:  # pragma: nocover
+        except:
             pass
 
-        if pron is None:
+        if not pron:
             try:
                 pron = data[0][1][2]
-            except:  # pragma: nocover
+            except:
                 pass
 
         if dest in EXCLUDES and pron == origin:
@@ -298,7 +298,7 @@ class Translator:
             else:
                 src = "".join(data[8][0])
                 confidence = data[8][-2][0]
-        except:  # pragma: nocover
+        except:
             pass
         result = [Detected(lang=src, confidence=confidence, response=response)]
 
