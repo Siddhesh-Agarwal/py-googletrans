@@ -4,8 +4,9 @@ A Translation module.
 
 You can translate text using this module.
 """
+
 import random
-import typing
+from typing import Dict, Iterator, List, Union
 
 import httpcore
 import httpx
@@ -14,12 +15,16 @@ from httpx import Timeout
 from googletrans import urls, utils
 from googletrans.gtoken import TokenAcquirer
 from googletrans.constants import (
-    DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES,
-    DEFAULT_RAISE_EXCEPTION, DUMMY_DATA
+    DEFAULT_USER_AGENT,
+    LANGCODES,
+    LANGUAGES,
+    SPECIAL_CASES,
+    DEFAULT_RAISE_EXCEPTION,
+    DUMMY_DATA,
 )
 from googletrans.models import Translated, Detected
 
-EXCLUDES = ('en', 'ca', 'fr')
+EXCLUDES = ("en", "ca", "fr")
 
 
 class Translator:
@@ -49,26 +54,32 @@ class Translator:
     :type raise_exception: boolean
     """
 
-    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
-                 raise_exception=DEFAULT_RAISE_EXCEPTION,
-                 proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = None,
-                 timeout: Timeout = None,
-                 http2=True):
-
+    def __init__(
+        self,
+        service_urls: Union[None, List[str]] = None,
+        user_agent: str = DEFAULT_USER_AGENT,
+        raise_exception: bool = DEFAULT_RAISE_EXCEPTION,
+        proxies: Union[Dict[str, httpcore.SyncHTTPTransport], None] = None,
+        timeout: Union[Timeout, None] = None,
+        http2: bool = True,
+    ):
         self.client = httpx.Client(http2=http2)
         if proxies is not None:  # pragma: nocover
             self.client.proxies = proxies
 
-        self.client.headers.update({
-            'User-Agent': user_agent,
-        })
+        self.client.headers.update(
+            {
+                "User-Agent": user_agent,
+            }
+        )
 
         if timeout is not None:
             self.client.timeout = timeout
 
-        self.service_urls = service_urls or ['translate.google.com']
+        self.service_urls = service_urls or ["translate.google.com"]
         self.token_acquirer = TokenAcquirer(
-            client=self.client, host=self.service_urls[0])
+            client=self.client, host=self.service_urls[0]
+        )
         self.raise_exception = raise_exception
 
     def _pick_service_url(self):
@@ -76,10 +87,11 @@ class Translator:
             return self.service_urls[0]
         return random.choice(self.service_urls)
 
-    def _translate(self, text, dest, src, override):
+    def _translate(self, text: str, dest: str, src: str, override):
         token = self.token_acquirer.do(text)
-        params = utils.build_params(query=text, src=src, dest=dest,
-                                    token=token, override=override)
+        params = utils.build_params(
+            query=text, src=src, dest=dest, token=token, override=override
+        )
 
         url = urls.TRANSLATE.format(host=self._pick_service_url())
         r = self.client.get(url, params=params)
@@ -89,36 +101,38 @@ class Translator:
             return data, r
 
         if self.raise_exception:
-            raise Exception('Unexpected status code "{}" from {}'.format(
-                r.status_code, self.service_urls))
+            raise Exception(
+                f'Unexpected status code "{r.status_code}" from {self.service_urls}'
+            )
 
         DUMMY_DATA[0][0][0] = text
         return DUMMY_DATA, r
 
     def _parse_extra_data(self, data):
         response_parts_name_mapping = {
-            0: 'translation',
-            1: 'all-translations',
-            2: 'original-language',
-            5: 'possible-translations',
-            6: 'confidence',
-            7: 'possible-mistakes',
-            8: 'language',
-            11: 'synonyms',
-            12: 'definitions',
-            13: 'examples',
-            14: 'see-also',
+            0: "translation",
+            1: "all-translations",
+            2: "original-language",
+            5: "possible-translations",
+            6: "confidence",
+            7: "possible-mistakes",
+            8: "language",
+            11: "synonyms",
+            12: "definitions",
+            13: "examples",
+            14: "see-also",
         }
 
         extra = {}
 
         for index, category in response_parts_name_mapping.items():
-            extra[category] = data[index] if (
-                index < len(data) and data[index]) else None
+            extra[category] = (
+                data[index] if (index < len(data) and data[index]) else None
+            )
 
         return extra
 
-    def translate(self, text, dest='en', src='auto', **kwargs):
+    def translate(self, text: str, dest: str = "en", src: str = "auto", **kwargs):
         """Translate text from source language to destination language
 
         :param text: The source text(s) to be translated. Batch translation is supported via sequence input.
@@ -157,16 +171,16 @@ class Translator:
             jumps over  ->  이상 점프
             the lazy dog  ->  게으른 개
         """
-        dest = dest.lower().split('_', 1)[0]
-        src = src.lower().split('_', 1)[0]
+        dest = dest.lower().split("_", 1)[0]
+        src = src.lower().split("_", 1)[0]
 
-        if src != 'auto' and src not in LANGUAGES:
+        if src != "auto" and src not in LANGUAGES:
             if src in SPECIAL_CASES:
                 src = SPECIAL_CASES[src]
             elif src in LANGCODES:
                 src = LANGCODES[src]
             else:
-                raise ValueError('invalid source language')
+                raise ValueError("invalid source language")
 
         if dest not in LANGUAGES:
             if dest in SPECIAL_CASES:
@@ -174,7 +188,7 @@ class Translator:
             elif dest in LANGCODES:
                 dest = LANGCODES[dest]
             else:
-                raise ValueError('invalid destination language')
+                raise ValueError("invalid destination language")
 
         if isinstance(text, list):
             result = []
@@ -187,7 +201,7 @@ class Translator:
         data, response = self._translate(text, dest, src, kwargs)
 
         # this code will be updated when the format is changed.
-        translated = ''.join([d[0] if d[0] else '' for d in data[0]])
+        translated = "".join(d[0] or "" for d in data[0])
 
         extra_data = self._parse_extra_data(data)
 
@@ -195,13 +209,13 @@ class Translator:
         # src passed is equal to auto.
         try:
             src = data[2]
-        except Exception:  # pragma: nocover
+        except:  # pragma: nocover
             pass
 
         pron = origin
         try:
             pron = data[0][1][-2]
-        except Exception:  # pragma: nocover
+        except:  # pragma: nocover
             pass
 
         if pron is None:
@@ -214,14 +228,19 @@ class Translator:
             pron = translated
 
         # put final values into a new Translated object
-        result = Translated(src=src, dest=dest, origin=origin,
-                            text=translated, pronunciation=pron,
-                            extra_data=extra_data,
-                            response=response)
+        result = Translated(
+            src=src,
+            dest=dest,
+            origin=origin,
+            text=translated,
+            pronunciation=pron,
+            extra_data=extra_data,
+            response=response,
+        )
 
         return result
 
-    def detect(self, text, **kwargs):
+    def detect(self, text: Union[str, Iterator[str]], **kwargs) -> List[Detected]:
         """Detect language of the input text
 
         :param text: The source text(s) whose language you want to identify.
@@ -253,27 +272,27 @@ class Translator:
             fr 0.043500196
         """
         if isinstance(text, list):
-            result = []
+            result: List[Detected] = []
             for item in text:
                 lang = self.detect(item)
-                result.append(lang)
+                result.extend(lang)
             return result
 
-        data, response = self._translate(text, 'en', 'auto', kwargs)
+        data, response = self._translate(text, "en", "auto", kwargs)
 
         # actual source language that will be recognized by Google Translator when the
         # src passed is equal to auto.
-        src = ''
+        src = ""
         confidence = 0.0
         try:
             if len(data[8][0]) > 1:
                 src = data[8][0]
                 confidence = data[8][-2]
             else:
-                src = ''.join(data[8][0])
+                src = "".join(data[8][0])
                 confidence = data[8][-2][0]
         except Exception:  # pragma: nocover
             pass
-        result = Detected(lang=src, confidence=confidence, response=response)
+        result = [Detected(lang=src, confidence=confidence, response=response)]
 
         return result
