@@ -1,72 +1,26 @@
-# Googletrans
+# pyGoogletrans
 
-[![GitHub
-license](https://img.shields.io/github/license/mashape/apistatus.svg)](http://opensource.org/licenses/MIT)
-[![travis
-status](https://travis-ci.org/Siddhesh-Agarwalpy-googletrans.svg?branch=master)](https://travis-ci.org/Siddhesh-Agarwalpy-googletrans)
-[![Documentation
-Status](https://readthedocs.org/projects/py-googletrans/badge/?version=latest)](https://readthedocs.org/projects/py-googletrans/?badge=latest)
-[![PyPI
-version](https://badge.fury.io/py/googletrans.svg)](http://badge.fury.io/py/googletrans)
-[![Coverage
-Status](https://coveralls.io/repos/github/Siddhesh-Agarwalpy-googletrans/badge.svg)](https://coveralls.io/github/Siddhesh-Agarwalpy-googletrans)
-[![Code
-Climate](https://codeclimate.com/github/Siddhesh-Agarwalpy-googletrans/badges/gpa.svg)](https://codeclimate.com/github/Siddhesh-Agarwalpy-googletrans)
+> This is a fork to continue the [amazing work of Suhun Han](https://github.com/ssut/py-googletrans)
 
-Googletrans is a **free** and **unlimited** python library that
-implemented Google Translate API. This uses the [Google Translate Ajax
-API](https://translate.google.com) to make calls to such methods as
-detect and translate.
+Googletrans is a **free** and **unlimited** Python library that implements Google Translate API. This uses the [Google Translate Ajax API](https://translate.google.com) to make calls to such methods as detect and translate.
 
-Compatible with Python 3.6+.
-
-For details refer to the [API
-Documentation](https://py-googletrans.readthedocs.io/en/latest).
+Compatible with Python 3.9 and above
 
 ## Features
 
-- Fast and reliable - it uses the same servers that translate.google.com uses
-- Auto language detection
-- Bulk translations
-- Customizable service URL
-- HTTP/2 support
-
-### TODO
-
-more features are coming soon.
-
-- Proxy support
-- Internal session management (for better bulk translations)
+- [x] Fast and reliable - it uses the same servers that translate.google.com uses
+- [x] Auto language detection
+- [x] Bulk translations
+- [x] Customizable service URL
+- [x] HTTP/2 support
+- [x] Poetry support
+- [ ] Fast JSON parsing
+- [ ] Proxy support
+- [ ] Internal session management (for better bulk translations)
 
 ### HTTP/2 support
 
-This library uses httpx for HTTP requests so HTTP/2 is supported by
-default.
-
-You can check if http2 is enabled and working by the
-[.\_response.http_version]{.title-ref} of [Translated]{.title-ref} or
-[Detected]{.title-ref} object:
-
-``` python
->>> translator.translate('테스트')._response.http_version
-# 'HTTP/2'
-```
-
-### How does this library work
-
-You may wonder why this library works properly, whereas other approaches
-such like goslate won\'t work since Google has updated its translation
-service recently with a ticket mechanism to prevent a lot of crawler
-programs.
-
-I eventually figure out a way to generate a ticket by reverse
-engineering on the [obfuscated and minified code used by Google to
-generate such
-token](https://translate.google.com/translate/releases/twsfe_w_20170306_RC00/r/js/desktop_module_main.js),
-and implemented on the top of Python. However, this could be blocked at
-any time.
-
-------------------------------------------------------------------------
+This library uses `httpx` for HTTP requests so HTTP/2 is supported by default.
 
 ## Installation
 
@@ -80,8 +34,7 @@ poetry install https://github.com/Siddhesh-Agarwal/py-googletrans/
 
 ## Basic Usage
 
-If source language is not given, google translate attempts to detect the
-source language.
+If the source language is not given, Google Translate attempts to detect the source language.
 
 ``` python
 >>> from googletrans import Translator
@@ -96,8 +49,7 @@ source language.
 
 ### Customize service URL
 
-You can use another google translate domain for translation. If multiple
-URLs are provided, it then randomly chooses a domain.
+You can use another Google Translate domain for translation. If multiple URLs are provided, it then randomly chooses a domain.
 
 ``` python
 >>> from googletrans import Translator
@@ -109,9 +61,7 @@ URLs are provided, it then randomly chooses a domain.
 
 ### Advanced Usage (Bulk)
 
-Array can be used to translate a batch of strings in a single method
-call and a single HTTP session. The exact same method shown above works
-for arrays as well.
+Use an array to translate a batch of strings in a single method call and HTTP session. The same method shown above works for arrays as well.
 
 ``` python
 >>> translations = translator.translate(['The quick brown fox', 'jumps over', 'the lazy dog'], dest='ko')
@@ -124,8 +74,7 @@ for arrays as well.
 
 ### Language detection
 
-The detect method, as its name implies, identifies the language used in
-a given sentence.
+As its name implies, the `detect` method identifies the language used in a given sentence.
 
 ``` python
 >>> from googletrans import Translator
@@ -140,7 +89,7 @@ a given sentence.
 # <Detected lang=eo confidence=0.10538048>
 ```
 
-## GoogleTrans as a command line application
+### GoogleTrans as a command line application
 
 ``` bash
 $ translate -h
@@ -169,29 +118,23 @@ $ translate -c "안녕하세요."
 [ko, 1] 안녕하세요.
 ```
 
-------------------------------------------------------------------------
-
 ## Note on library usage
 
-DISCLAIMER: this is an unofficial library using the web API of
-translate.google.com and also is not associated with Google.
+DISCLAIMER: This is an unofficial library using the web API of translate.google.com and also is not associated with Google.
 
 - **The maximum character limit on a single text is 15k.**
-- Due to limitations of the web version of google translate, this API does not guarantee that the library would work properly at all times (so please use this library if you don\'t care about stability).
+- Due to limitations of the web version of Google Translate, this API does not guarantee that the library will work properly at all times (so please use this library if you don't care about stability).
 - **Important:** If you want to use a stable API, I highly recommend you to use [Google\'s official translate API](https://cloud.google.com/translate/docs).
-- If you get HTTP 5xx error or errors like #6, it\'s probably because Google has banned your client IP address.
+- If you get an HTTP 5xx error or errors like #6, it\'s probably because Google has banned your client IP address.
 
 ## Versioning
 
-This library follows [Semantic Versioning](http://semver.org/). Any release versioned 0.x.y is subject to backwards incompatible
+This library follows [Semantic Versioning](http://semver.org/). Any release versioned `0.x.y` is subject to backwards incompatible
 changes at any time.
 
 ## Contributing
 
-Contributions are more than welcomed. See
-[CONTRIBUTING.md](CONTRIBUTING.md)
-
-------------------------------------------------------------------------
+I want you to know that contributions are more than welcome. See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
